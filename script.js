@@ -9,14 +9,14 @@ formulario.addEventListener("submit", function (e) {
 
     e.preventDefault();
 
-    const nombre = document.getElementById("nombre").value;
-    const descripcion = document.getElementById("descripcion").value;
-    const categoria = document.getElementById("categoria").value;
+    const nombre = document.getElementById("nombre").value.trim();
+    const descripcion = document.getElementById("descripcion").value.trim();
+    const categoria = document.getElementById("categoria").value.trim();
 
     if (
-        nombre.trim() === "" ||
-        descripcion.trim() === "" ||
-        categoria.trim() === ""
+    nombre === "" ||
+    descripcion === "" ||
+    categoria === ""
     ) {
 
         mensaje.innerHTML = `
