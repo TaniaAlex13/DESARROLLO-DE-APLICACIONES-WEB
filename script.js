@@ -1,71 +1,191 @@
 const formulario = document.getElementById("formServicio");
+
+const nombre = document.getElementById("nombre");
+const descripcion = document.getElementById("descripcion");
+const categoria = document.getElementById("categoria");
+
 const lista = document.getElementById("listaServicios");
 const mensaje = document.getElementById("mensaje");
 const total = document.getElementById("total");
 
 let contador = 0;
 
-formulario.addEventListener("submit", function (e) {
+
+// VALIDAR NOMBRE
+
+function validarNombre(){
+
+    if(nombre.value.trim()===""){
+
+        nombre.classList.add("is-invalid");
+        nombre.classList.remove("is-valid");
+
+        document.getElementById("errorNombre").textContent="El nombre es obligatorio.";
+
+        return false;
+    }
+
+    if(nombre.value.trim().length<4){
+
+        nombre.classList.add("is-invalid");
+        nombre.classList.remove("is-valid");
+
+        document.getElementById("errorNombre").textContent="Debe tener mínimo 4 caracteres.";
+
+        return false;
+    }
+
+    nombre.classList.remove("is-invalid");
+    nombre.classList.add("is-valid");
+
+    return true;
+
+}
+
+
+
+// VALIDAR DESCRIPCION
+
+function validarDescripcion(){
+
+    if(descripcion.value.trim().length<10){
+
+        descripcion.classList.add("is-invalid");
+        descripcion.classList.remove("is-valid");
+
+        document.getElementById("errorDescripcion").textContent="Ingrese al menos 10 caracteres.";
+
+        return false;
+    }
+
+    descripcion.classList.remove("is-invalid");
+    descripcion.classList.add("is-valid");
+
+    return true;
+
+}
+
+
+
+// VALIDAR CATEGORIA
+
+function validarCategoria(){
+
+    if(categoria.value===""){
+
+        categoria.classList.add("is-invalid");
+        categoria.classList.remove("is-valid");
+
+        document.getElementById("errorCategoria").textContent="Seleccione una categoría.";
+
+        return false;
+
+    }
+
+    categoria.classList.remove("is-invalid");
+    categoria.classList.add("is-valid");
+
+    return true;
+
+}
+
+
+
+// EVENTOS
+
+nombre.addEventListener("input", validarNombre);
+
+descripcion.addEventListener("blur", validarDescripcion);
+
+categoria.addEventListener("change", validarCategoria);
+
+
+
+// ENVIAR FORMULARIO
+
+formulario.addEventListener("submit",function(e){
 
     e.preventDefault();
 
-    const nombre = document.getElementById("nombre").value.trim();
-    const descripcion = document.getElementById("descripcion").value.trim();
-    const categoria = document.getElementById("categoria").value.trim();
+    const okNombre=validarNombre();
+    const okDescripcion=validarDescripcion();
+    const okCategoria=validarCategoria();
 
-    if (
-    nombre === "" ||
-    descripcion === "" ||
-    categoria === ""
-    ) {
+    if(!(okNombre && okDescripcion && okCategoria)){
 
-        mensaje.innerHTML = `
-            <div class="alert alert-danger">
-                Todos los campos son obligatorios.
-            </div>
+        mensaje.innerHTML=`
+        <div class="alert alert-danger">
+            Corrija los errores antes de registrar.
+        </div>
         `;
 
         return;
+
     }
-
-    mensaje.innerHTML = `
-        <div class="alert alert-success">
-            Servicio registrado correctamente.
-        </div>
-    `;
-
-    const tarjeta = document.createElement("div");
-
-    tarjeta.className = "card p-3 mb-3 shadow";
-
-    tarjeta.innerHTML = `
-        <h5>${nombre}</h5>
-        <p>${descripcion}</p>
-        <span class="badge bg-primary mb-2">
-            ${categoria}
-        </span>
-        <br>
-        <button class="btn btn-danger eliminar">
-            Eliminar
-        </button>
-    `;
-
-    const botonEliminar = tarjeta.querySelector(".eliminar");
-
-    botonEliminar.addEventListener("click", function () {
-
-        tarjeta.remove();
-
-        contador--;
-
-        total.textContent = contador;
-    });
-
-    lista.appendChild(tarjeta);
 
     contador++;
 
-    total.textContent = contador;
+    total.textContent=contador;
+
+    const tarjeta=document.createElement("div");
+
+    tarjeta.className="card registro";
+
+    tarjeta.innerHTML=`
+
+        <div class="card-body">
+
+            <h5>${nombre.value}</h5>
+
+            <p>${descripcion.value}</p>
+
+            <span class="badge bg-primary">${categoria.value}</span>
+
+            <br><br>
+
+            <button class="btn btn-danger btnEliminar">
+                Eliminar
+            </button>
+
+        </div>
+
+    `;
+
+    lista.appendChild(tarjeta);
+
+
+    mensaje.innerHTML=`
+
+        <div class="alert alert-success">
+
+            Registro agregado correctamente.
+
+        </div>
+
+    `;
 
     formulario.reset();
+
+    nombre.classList.remove("is-valid");
+    descripcion.classList.remove("is-valid");
+    categoria.classList.remove("is-valid");
+
+});
+
+
+
+// ELIMINAR
+
+lista.addEventListener("click",function(e){
+
+    if(e.target.classList.contains("btnEliminar")){
+
+        e.target.closest(".card").remove();
+
+        contador--;
+
+        total.textContent=contador;
+
+    }
+
 });
