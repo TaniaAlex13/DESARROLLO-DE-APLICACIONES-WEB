@@ -186,20 +186,49 @@
 
     <form id="formServicio">
 
-        <input type="text"
-               id="nombre"
-               class="form-control mb-2"
-               placeholder="Nombre del servicio">
+        <div class="mb-3">
 
-        <input type="text"
-               id="descripcion"
-               class="form-control mb-2"
-               placeholder="Descripción">
+            <input
+                type="text"
+                id="nombre"
+                class="form-control"
+                placeholder="Nombre del servicio">
 
-        <input type="text"
-               id="categoria"
-               class="form-control mb-2"
-               placeholder="Categoría">
+        <div id="errorNombre" class="invalid-feedback"></div>
+
+    </div>
+
+        <div class="mb-3">
+
+            <textarea
+                id="descripcion"
+                class="form-control"
+                placeholder="Descripción"></textarea>
+
+        <div id="errorDescripcion"
+                class="invalid-feedback"></div>
+
+    </div>
+
+        <div class="mb-3">
+
+             <select id="categoria" class="form-select">
+
+                <option value="">Seleccione una categoría</option>
+
+                <option>Diseño Web</option>
+
+                <option>Desarrollo</option>
+
+                <option>Mantenimiento</option>
+
+                <option>Optimización</option>
+
+        </select>
+
+        <div id="errorCategoria" class="invalid-feedback"></div>
+
+    </div>
 
         <button class="btn btn-primary">
             Registrar
