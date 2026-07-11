@@ -10,6 +10,8 @@ const total = document.getElementById("total");
 
 let contador = 0;
 
+// Arreglo donde se almacenarán los servicios
+let servicios = [];
 
 // VALIDAR NOMBRE
 
@@ -123,36 +125,19 @@ formulario.addEventListener("submit",function(e){
 
     }
 
+    const servicio = {
+        nombre: nombre.value,
+        descripcion: descripcion.value,
+        categoria: categoria.value
+    };
+
+    servicios.push(servicio);
+
     contador++;
 
     total.textContent=contador;
 
-    const tarjeta=document.createElement("div");
-
-    tarjeta.className="card registro";
-
-    tarjeta.innerHTML=`
-
-        <div class="card-body">
-
-            <h5>${nombre.value}</h5>
-
-            <p>${descripcion.value}</p>
-
-            <span class="badge bg-primary">${categoria.value}</span>
-
-            <br><br>
-
-            <button class="btn btn-danger btnEliminar">
-                Eliminar
-            </button>
-
-        </div>
-
-    `;
-
-    lista.appendChild(tarjeta);
-
+    mostrarServicios();
 
     mensaje.innerHTML=`
 
@@ -189,3 +174,39 @@ lista.addEventListener("click",function(e){
     }
 
 });
+
+function mostrarServicios(){
+
+    lista.innerHTML="";
+    servicios.forEach(function(servicio){
+
+        const tarjeta=document.createElement("div");
+
+        tarjeta.className="card registro";
+
+        tarjeta.innerHTML=`
+
+            <div class="card-body">
+
+                <h5>${servicio.nombre}</h5>
+
+                <p>${servicio.descripcion}</p>
+
+                <span class="badge bg-primary">${servicio.categoria}</span>
+
+                <br><br>
+
+                <button class="btn btn-danger btnEliminar">
+                    Eliminar
+                </button>
+
+            </div>
+
+        `;
+
+        lista.appendChild(tarjeta);
+
+});
+
+        
+}
