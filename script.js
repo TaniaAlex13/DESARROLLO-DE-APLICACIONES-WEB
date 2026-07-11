@@ -126,16 +126,21 @@ formulario.addEventListener("submit",function(e){
     }
 
     const servicio = {
+
+        id: Date.now(),
+
         nombre: nombre.value,
+
         descripcion: descripcion.value,
+
         categoria: categoria.value
+
     };
 
     servicios.push(servicio);
 
-    contador++;
-
-    total.textContent=contador;
+    contador = servicios.length;
+    total.textContent = contador;
 
     mostrarServicios();
 
@@ -161,15 +166,26 @@ formulario.addEventListener("submit",function(e){
 
 // ELIMINAR
 
-lista.addEventListener("click",function(e){
+lista.addEventListener("click", function(e){
 
     if(e.target.classList.contains("btnEliminar")){
 
-        e.target.closest(".card").remove();
+        const id = Number(e.target.dataset.id);
 
-        contador--;
 
-        total.textContent=contador;
+        servicios = servicios.filter(function(servicio){
+
+            return servicio.id !== id;
+
+        });
+
+
+        contador = servicios.length;
+
+        total.textContent = contador;
+
+
+        mostrarServicios();
 
     }
 
@@ -178,6 +194,20 @@ lista.addEventListener("click",function(e){
 function mostrarServicios(){
 
     lista.innerHTML="";
+
+    if(servicios.length===0){
+
+    lista.innerHTML=`
+        <div class="alert alert-warning">
+            No existen registros.
+        </div>
+    `;
+
+    total.textContent=0;
+
+    return;
+
+}
     servicios.forEach(function(servicio){
 
         const tarjeta=document.createElement("div");
@@ -196,7 +226,7 @@ function mostrarServicios(){
 
                 <br><br>
 
-                <button class="btn btn-danger btnEliminar">
+                <button class="btn btn-danger btnEliminar" data-id="${servicio.id}">
                     Eliminar
                 </button>
 
@@ -207,6 +237,7 @@ function mostrarServicios(){
         lista.appendChild(tarjeta);
 
 });
-
-        
+       
 }
+
+mostrarServicios();
