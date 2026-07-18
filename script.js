@@ -7,6 +7,7 @@ const categoria = document.getElementById("categoria");
 const lista = document.getElementById("listaServicios");
 const mensaje = document.getElementById("mensaje");
 const total = document.getElementById("total");
+const spinner = document.getElementById("spinner");
 
 let contador = 0;
 
@@ -142,19 +143,22 @@ formulario.addEventListener("submit",function(e){
     contador = servicios.length;
     total.textContent = contador;
 
+    spinner.style.display = "block";
+mensaje.innerHTML = "";
+
+setTimeout(function(){
+
+    spinner.style.display = "none";
+
     mostrarServicios();
 
-    mensaje.innerHTML=`
-
+    mensaje.innerHTML = `
         <div class="alert alert-success">
-
             Registro agregado correctamente.
-
         </div>
-
     `;
 
-    formulario.reset();
+}, 1000);
 
     nombre.classList.remove("is-valid");
     descripcion.classList.remove("is-valid");
