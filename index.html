@@ -16,14 +16,18 @@
 <!-- PLANTILLA BASE (base.html) -->
  <!-- ENCABEZADO REUTILIZABLE -->
 <!-- HEADER -->
-<header>
-    <h1>Bienvenido a mi Proyecto Web</h1>
-    <p>Desarrollo de Aplicaciones Web con HTML5, CSS3 y Bootstrap</p>
+<header class="bg-primary text-white text-center py-5 shadow">
+    <div class="container">
+        <h1 class="display-5 fw-bold">Bienvenido a mi Proyecto Web</h1>
+        <p class="lead">
+            Desarrollo de Aplicaciones Web con HTML5, CSS3 y Bootstrap
+        </p>
+    </div>
 </header>
 
 <!-- MENÚ DE NAVEGACIÓN -->
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow sticky-top">
     <div class="container">
 
         <a class="navbar-brand" href="#">Mi Proyecto</a>
@@ -189,9 +193,9 @@
 <section class="container p-4">
     <h2 class="text-center mb-4">Registro de Servicios</h2>
 
-    <form id="formServicio">
+    <form id="formServicio" class="row g-3">
 
-        <div class="mb-3">
+        <div class="col-md-6">
 
             <input
                 type="text"
@@ -203,7 +207,7 @@
 
     </div>
 
-        <div class="mb-3">
+        <div class="col-md-6">
 
             <textarea
                 id="descripcion"
@@ -215,7 +219,7 @@
 
     </div>
 
-        <div class="mb-3">
+        <div class="col-md-6">
 
              <select id="categoria" class="form-select">
 
@@ -235,9 +239,11 @@
 
     </div>
 
-        <button class="btn btn-primary">
+         <div class="col-12">
+         <button class="btn btn-success w-100">
             Registrar
         </button>
+    </div>
 
     </form>
 
@@ -261,6 +267,39 @@
     <p>Horario: Lunes a Viernes de 09:00 a 18:00</p>
     <p>Promoción especial durante este mes</p>
 </aside>
+
+<!-- MODAL BOOTSTRAP -->
+<div class="modal fade" id="modalInfo" tabindex="-1" aria-labelledby="modalInfoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalInfoLabel">
+                    Información del Proyecto
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p><strong>Proyecto:</strong> Desarrollo de Aplicaciones Web</p>
+                <p><strong>Estudiante:</strong> Tania Toapanta</p>
+                <p><strong>Semana:</strong> 8</p>
+                <p>
+                    Este proyecto utiliza HTML5, CSS3, JavaScript y Bootstrap,
+                    incorporando validaciones dinámicas, renderizado de datos
+                    y una interfaz adaptable a diferentes dispositivos.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <!-- PIE DE PÁGINA -->
 <!-- FOOTER -->
