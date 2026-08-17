@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inicio - Mi Proyecto Web
+{% endblock %}
+
+{% block content %}
+
+<!-- INICIO -->
+<section id="inicio" class="text-center p-5">
+
+    <h2>Bienvenido a mi Proyecto Web</h2>
+
+    <p>
+        Bienvenido a nuestro proyecto de Desarrollo de Aplicaciones Web.
+        Este sitio utiliza Python, Flask, HTML5, CSS3, Bootstrap y Jinja2
+        para crear una aplicación web moderna y responsiva.
+    </p>
+
+    <a href="{{ url_for('productos') }}"
+       class="btn btn-primary m-2">
+        Ver Productos
+    </a>
+
+    <a href="{{ url_for('clientes') }}"
+       class="btn btn-success m-2">
+        Ver Clientes
+    </a>
+
+</section>
+
+
+<!-- QUIÉNES SOMOS -->
+
+<section id="quienes" class="p-4">
+
+    <h2 class="text-center mb-4">
+        Quiénes Somos
+    </h2>
+
+    <div class="row align-items-center">
+
+        <div class="col-md-6">
+
+            <p>
+                Somos un proyecto académico enfocado en el desarrollo
+                de aplicaciones web modernas utilizando Python y Flask.
+                El proyecto permite organizar diferentes módulos como
+                productos, clientes, proveedores y facturación.
+            </p>
+
+        </div>
+
+        <div class="col-md-6 text-center">
+
+            <img
+                src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6"
+                class="img-fluid rounded sombra"
+                alt="Desarrollo Web">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- INFORMACIÓN DEL PROYECTO -->
+
+<section class="p-4">
+
+    <h2 class="text-center mb-4">
+        Módulos del Sistema
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card h-100 sombra">
+
+                <div class="card-body text-center">
+
+                    <h5 class="card-title">
+                        Productos
+                    </h5>
+
+                    <p class="card-text">
+                        Administración de productos.
+                    </p>
+
+                    <a href="{{ url_for('productos') }}"
+                       class="btn btn-primary">
+                        Ingresar
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card h-100 sombra">
+
+                <div class="card-body text-center">
+
+                    <h5 class="card-title">
+                        Clientes
+                    </h5>
+
+                    <p class="card-text">
+                        Información de clientes.
+                    </p>
+
+                    <a href="{{ url_for('clientes') }}"
+                       class="btn btn-success">
+                        Ingresar
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card h-100 sombra">
+
+                <div class="card-body text-center">
+
+                    <h5 class="card-title">
+                        Proveedores
+                    </h5>
+
+                    <p class="card-text">
+                        Administración de proveedores.
+                    </p>
+
+                    <a href="{{ url_for('proveedores') }}"
+                       class="btn btn-warning">
+                        Ingresar
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card h-100 sombra">
+
+                <div class="card-body text-center">
+
+                    <h5 class="card-title">
+                        Facturación
+                    </h5>
+
+                    <p class="card-text">
+                        Gestión de facturación.
+                    </p>
+
+                    <a href="{{ url_for('facturacion') }}"
+                       class="btn btn-danger">
+                        Ingresar
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CONTACTO -->
+
+<section id="contacto" class="p-4">
+
+    <h2 class="text-center mb-4">
+        Contacto
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <p>
+                <strong>Correo:</strong>
+                ta.toapantac@uea.edu.ec
+            </p>
+
+            <p>
+                <strong>Teléfono:</strong>
+                0987761971
+            </p>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <a
+                class="btn btn-success m-1"
+                href="mailto:ta.toapantac@uea.edu.ec">
+                Correo
+            </a>
+
+            <a
+                class="btn btn-primary m-1"
+                href="https://facebook.com"
+                target="_blank">
+                Facebook
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- INFORMACIÓN COMPLEMENTARIA -->
+
+<aside class="alert alert-info mt-3">
+
+    <h4>
+        Información complementaria
+    </h4>
+
+    <p>
+        Horario: Lunes a Viernes de 09:00 a 18:00
+    </p>
+
+    <p>
+        Proyecto académico desarrollado con Flask.
+    </p>
+
+</aside>
+
+{% endblock %}
