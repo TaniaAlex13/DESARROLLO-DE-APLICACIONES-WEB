@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h1 class="text-center mb-4">Facturación</h1>
+
+    <div class="card shadow">
+        <div class="card-body">
+
+            <h5 class="card-title">Registro de Facturas</h5>
+
+            <p class="card-text">
+                En este módulo se presentan datos demostrativos
+                relacionados con la facturación del sistema.
+            </p>
+
+            <table class="table table-bordered table-striped">
+                <thead class="table-primary">
+                    <tr>
+                        <th>N° Factura</th>
+                        <th>Cliente</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>001-001-000001</td>
+                        <td>Juan Pérez</td>
+                        <td>$50.00</td>
+                        <td>
+                            <span class="badge bg-success">Pagada</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>001-001-000002</td>
+                        <td>María López</td>
+                        <td>$85.00</td>
+                        <td>
+                            <span class="badge bg-warning text-dark">Pendiente</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
