@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}
+Clientes
+{% endblock %}
+
+{% block content %}
+
+<h2 class="text-center mb-4">Clientes</h2>
+
+<div class="table-responsive">
+
+    <table class="table table-striped table-bordered">
+
+        <thead class="table-primary">
+
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>María López</td>
+                <td>maria@gmail.com</td>
+                <td>0991111111</td>
+            </tr>
+
+            <tr>
+                <td>Juan Pérez</td>
+                <td>juan@gmail.com</td>
+                <td>0982222222</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
