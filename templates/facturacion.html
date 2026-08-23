@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}Facturación{% endblock %}
+
 {% block content %}
 
 <div class="container py-5">
@@ -12,39 +14,65 @@
             <h5 class="card-title">Registro de Facturas</h5>
 
             <p class="card-text">
-                En este módulo se presentan datos demostrativos
-                relacionados con la facturación del sistema.
+                En este módulo se muestran las facturas registradas
+                dinámicamente mediante Jinja2.
             </p>
 
             <table class="table table-bordered table-striped">
+
                 <thead class="table-primary">
+
                     <tr>
                         <th>N° Factura</th>
                         <th>Cliente</th>
                         <th>Total</th>
                         <th>Estado</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>001-001-000001</td>
-                        <td>Juan Pérez</td>
-                        <td>$50.00</td>
-                        <td>
-                            <span class="badge bg-success">Pagada</span>
-                        </td>
-                    </tr>
+
+                    {% for factura in facturas %}
 
                     <tr>
-                        <td>001-001-000002</td>
-                        <td>María López</td>
-                        <td>$85.00</td>
+
                         <td>
-                            <span class="badge bg-warning text-dark">Pendiente</span>
+                            {{ factura.numero }}
                         </td>
+
+                        <td>
+                            {{ factura.cliente }}
+                        </td>
+
+                        <td>
+                            ${{ "%.2f"|format(factura.total) }}
+                        </td>
+
+                        <td>
+
+                            {% if factura.estado == "Pagada" %}
+
+                                <span class="badge bg-success">
+                                    {{ factura.estado }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-warning text-dark">
+                                    {{ factura.estado }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
                     </tr>
+
+                    {% endfor %}
+
                 </tbody>
+
             </table>
 
         </div>

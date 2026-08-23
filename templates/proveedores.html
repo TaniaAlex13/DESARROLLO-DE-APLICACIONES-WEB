@@ -1,53 +1,78 @@
 {% extends "base.html" %}
 
-{% block title %}
-Proveedores
-{% endblock %}
+{% block title %}Proveedores{% endblock %}
 
 {% block content %}
 
-<h2 class="text-center mb-4">Proveedores</h2>
+<div class="container py-5">
 
-<div class="row">
+    <h1 class="text-center mb-4">Proveedores</h1>
 
-    <div class="col-md-6 mb-3">
+    <div class="card shadow">
 
-        <div class="card h-100">
+        <div class="card-body">
 
-            <div class="card-body">
+            <h5 class="card-title">Listado de Proveedores</h5>
 
-                <h5 class="card-title">Proveedor Tecnológico</h5>
+            <p class="card-text">
+                En este módulo se presentan los proveedores registrados
+                dinámicamente mediante Flask y Jinja2.
+            </p>
 
-                <p class="card-text">
-                    Proveedor de equipos y accesorios informáticos.
-                </p>
+            <div class="table-responsive">
 
-                <span class="badge bg-primary">
-                    Tecnología
-                </span>
+                <table class="table table-bordered table-striped table-hover">
 
-            </div>
+                    <thead class="table-primary">
 
-        </div>
+                        <tr>
+                            <th>#</th>
+                            <th>Empresa</th>
+                            <th>Contacto</th>
+                            <th>Teléfono</th>
+                        </tr>
 
-    </div>
+                    </thead>
 
+                    <tbody>
 
-    <div class="col-md-6 mb-3">
+                        {% for proveedor in proveedores %}
 
-        <div class="card h-100">
+                        <tr>
 
-            <div class="card-body">
+                            <td>
+                                {{ loop.index }}
+                            </td>
 
-                <h5 class="card-title">Proveedor de Oficina</h5>
+                            <td>
+                                {{ proveedor.empresa }}
+                            </td>
 
-                <p class="card-text">
-                    Proveedor de materiales y suministros de oficina.
-                </p>
+                            <td>
+                                {{ proveedor.contacto }}
+                            </td>
 
-                <span class="badge bg-success">
-                    Oficina
-                </span>
+                            <td>
+                                {{ proveedor.telefono }}
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+
+                            <td colspan="4" class="text-center">
+                                No existen proveedores registrados.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
 
             </div>
 

@@ -1,81 +1,88 @@
 {% extends "base.html" %}
 
-{% block title %}
-Productos
-{% endblock %}
+{% block title %}Productos{% endblock %}
 
 {% block content %}
 
-<h2 class="text-center mb-4">Productos</h2>
+<div class="container py-5">
 
-<div class="row">
+    <h1 class="text-center mb-4">Productos</h1>
 
-    <div class="col-md-4 mb-3">
+    <div class="card shadow">
+        <div class="card-body">
 
-        <div class="card h-100">
+            <h5 class="card-title">Listado de Productos</h5>
 
-            <div class="card-body">
+            <p class="card-text">
+                Los productos se muestran dinámicamente utilizando
+                listas, diccionarios y estructuras Jinja2.
+            </p>
 
-                <h5 class="card-title">Computadora</h5>
+            <div class="table-responsive">
 
-                <p class="card-text">
-                    Equipo informático para trabajo y estudio.
-                </p>
+                <table class="table table-bordered table-striped">
 
-                <span class="badge bg-primary">
-                    Tecnología
-                </span>
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for producto in productos %}
+
+                        <tr>
+
+                            <td>
+                                {{ producto.nombre }}
+                            </td>
+
+                            <td>
+                                {{ producto.categoria|upper }}
+                            </td>
+
+                            <td>
+                                ${{ "%.2f"|format(producto.precio) }}
+                            </td>
+
+                            <td>
+                                {{ producto.stock }}
+                            </td>
+
+                            <td>
+
+                                {% if producto.stock > 0 %}
+
+                                    <span class="badge bg-success">
+                                        Disponible
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+                                        Agotado
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
 
             </div>
 
         </div>
-
-    </div>
-
-
-    <div class="col-md-4 mb-3">
-
-        <div class="card h-100">
-
-            <div class="card-body">
-
-                <h5 class="card-title">Impresora</h5>
-
-                <p class="card-text">
-                    Impresora multifuncional para documentos.
-                </p>
-
-                <span class="badge bg-success">
-                    Oficina
-                </span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="col-md-4 mb-3">
-
-        <div class="card h-100">
-
-            <div class="card-body">
-
-                <h5 class="card-title">Teclado</h5>
-
-                <p class="card-text">
-                    Teclado USB para computadora.
-                </p>
-
-                <span class="badge bg-warning text-dark">
-                    Accesorios
-                </span>
-
-            </div>
-
-        </div>
-
     </div>
 
 </div>
