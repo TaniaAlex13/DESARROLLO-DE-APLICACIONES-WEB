@@ -1,15 +1,15 @@
 from flask import Flask, render_template, redirect, url_for, flash
 
-# Importar formularios
 from forms.producto_form import ProductoForm
 from forms.cliente_form import ClienteForm
-from forms.proveedor_form import ProveedorForm
-from forms.facturacion_form import FacturacionForm
 
 
 app = Flask(__name__)
 
-# Configuración para Flask-WTF y protección CSRF
+# =========================
+# CONFIGURACIÓN
+# =========================
+
 app.config["SECRET_KEY"] = "clave-secreta-proyecto"
 
 
@@ -49,17 +49,20 @@ clientes_lista = [
     {
         "nombre": "Juan Pérez",
         "correo": "juan@gmail.com",
-        "telefono": "0991234567"
+        "telefono": "0991234567",
+        "estado": "Activo"
     },
     {
         "nombre": "María López",
         "correo": "maria@gmail.com",
-        "telefono": "0987654321"
+        "telefono": "0987654321",
+        "estado": "Activo"
     },
     {
         "nombre": "Carlos Andrade",
         "correo": "carlos@gmail.com",
-        "telefono": "0974561234"
+        "telefono": "0974561234",
+        "estado": "Inactivo"
     }
 ]
 
@@ -101,7 +104,7 @@ facturas_lista = [
 
 
 # =========================
-# RUTA PRINCIPAL
+# INICIO
 # =========================
 
 @app.route("/")
@@ -135,7 +138,19 @@ def formulario_producto():
 
     if form.validate_on_submit():
 
-        flash("Producto validado correctamente.", "success")
+        producto = {
+            "nombre": form.nombre.data,
+            "categoria": form.categoria.data,
+            "precio": form.precio.data,
+            "stock": form.stock.data
+        }
+
+        productos_lista.append(producto)
+
+        flash(
+            "Producto registrado correctamente.",
+            "success"
+        )
 
         return redirect(url_for("productos"))
 
@@ -155,6 +170,35 @@ def clientes():
     return render_template(
         "clientes.html",
         clientes=clientes_lista
+    )
+
+
+@app.route("/formulario-cliente", methods=["GET", "POST"])
+def formulario_cliente():
+
+    form = ClienteForm()
+
+    if form.validate_on_submit():
+
+        cliente = {
+            "nombre": form.nombre.data,
+            "correo": form.correo.data,
+            "telefono": form.telefono.data,
+            "estado": "Activo"
+        }
+
+        clientes_lista.append(cliente)
+
+        flash(
+            "Cliente registrado correctamente.",
+            "success"
+        )
+
+        return redirect(url_for("clientes"))
+
+    return render_template(
+        "formulario_cliente.html",
+        form=form
     )
 
 
