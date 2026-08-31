@@ -1,6 +1,16 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for, flash
+
+# Importar formularios
+from forms.producto_form import ProductoForm
+from forms.cliente_form import ClienteForm
+from forms.proveedor_form import ProveedorForm
+from forms.facturacion_form import FacturacionForm
+
 
 app = Flask(__name__)
+
+# Configuración para Flask-WTF y protección CSRF
+app.config["SECRET_KEY"] = "clave-secreta-proyecto"
 
 
 # =========================
@@ -91,7 +101,7 @@ facturas_lista = [
 
 
 # =========================
-# RUTAS
+# RUTA PRINCIPAL
 # =========================
 
 @app.route("/")
@@ -105,6 +115,10 @@ def inicio():
     )
 
 
+# =========================
+# PRODUCTOS
+# =========================
+
 @app.route("/productos")
 def productos():
 
@@ -113,39 +127,40 @@ def productos():
         productos=productos_lista
     )
 
+
+@app.route("/formulario-producto", methods=["GET", "POST"])
+def formulario_producto():
+
+    form = ProductoForm()
+
+    if form.validate_on_submit():
+
+        flash("Producto validado correctamente.", "success")
+
+        return redirect(url_for("productos"))
+
+    return render_template(
+        "formulario_producto.html",
+        form=form
+    )
+
+
+# =========================
+# CLIENTES
+# =========================
+
 @app.route("/clientes")
 def clientes():
 
-    clientes = [
-        {
-            "nombre": "Juan Pérez",
-            "correo": "juan@gmail.com",
-            "telefono": "0991234567",
-            "estado": "Activo"
-        },
-        {
-            "nombre": "María López",
-            "correo": "maria@gmail.com",
-            "telefono": "0987654321",
-            "estado": "Activo"
-        },
-        {
-            "nombre": "Carlos Sánchez",
-            "correo": "carlos@gmail.com",
-            "telefono": "0976543210",
-            "estado": "Inactivo"
-        },
-        {
-            "nombre": "Ana Torres",
-            "correo": "ana@gmail.com",
-            "telefono": "0965432109",
-            "estado": "Activo"
-        }
-    ]
     return render_template(
         "clientes.html",
-        clientes=clientes
+        clientes=clientes_lista
     )
+
+
+# =========================
+# PROVEEDORES
+# =========================
 
 @app.route("/proveedores")
 def proveedores():
@@ -154,6 +169,11 @@ def proveedores():
         "proveedores.html",
         proveedores=proveedores_lista
     )
+
+
+# =========================
+# FACTURACIÓN
+# =========================
 
 @app.route("/facturacion")
 def facturacion():
