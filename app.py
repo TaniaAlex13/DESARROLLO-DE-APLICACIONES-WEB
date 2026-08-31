@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, flash
 
 from forms.producto_form import ProductoForm
 from forms.cliente_form import ClienteForm
+from forms.proveedor_form import ProveedorForm
 
 
 app = Flask(__name__)
@@ -14,7 +15,7 @@ app.config["SECRET_KEY"] = "clave-secreta-proyecto"
 
 
 # =========================
-# DATOS DE EJEMPLO
+# DATOS DE PRODUCTOS
 # =========================
 
 productos_lista = [
@@ -45,6 +46,10 @@ productos_lista = [
 ]
 
 
+# =========================
+# DATOS DE CLIENTES
+# =========================
+
 clientes_lista = [
     {
         "nombre": "Juan Pérez",
@@ -67,6 +72,10 @@ clientes_lista = [
 ]
 
 
+# =========================
+# DATOS DE PROVEEDORES
+# =========================
+
 proveedores_lista = [
     {
         "empresa": "Tech Solutions",
@@ -80,6 +89,10 @@ proveedores_lista = [
     }
 ]
 
+
+# =========================
+# DATOS DE FACTURACIÓN
+# =========================
 
 facturas_lista = [
     {
@@ -212,6 +225,34 @@ def proveedores():
     return render_template(
         "proveedores.html",
         proveedores=proveedores_lista
+    )
+
+
+@app.route("/formulario-proveedor", methods=["GET", "POST"])
+def formulario_proveedor():
+
+    form = ProveedorForm()
+
+    if form.validate_on_submit():
+
+        proveedor = {
+            "empresa": form.empresa.data,
+            "contacto": form.contacto.data,
+            "telefono": form.telefono.data
+        }
+
+        proveedores_lista.append(proveedor)
+
+        flash(
+            "Proveedor registrado correctamente.",
+            "success"
+        )
+
+        return redirect(url_for("proveedores"))
+
+    return render_template(
+        "formulario_proveedor.html",
+        form=form
     )
 
 

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Proveedor{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+```
+<div class="row justify-content-center">
+
+    <div class="col-md-7">
+
+        <div class="card shadow">
+
+            <div class="card-body">
+
+                <h2 class="text-center mb-4">
+                    Registrar Proveedor
+                </h2>
+
+                <form method="POST">
+
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+
+                        {{ form.empresa.label(class="form-label") }}
+
+                        {{ form.empresa(
+                            class="form-control",
+                            placeholder="Ingrese el nombre de la empresa"
+                        ) }}
+
+                        {% for error in form.empresa.errors %}
+
+                            <div class="text-danger mt-1">
+                                {{ error }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        {{ form.contacto.label(class="form-label") }}
+
+                        {{ form.contacto(
+                            class="form-control",
+                            placeholder="Ingrese el nombre del contacto"
+                        ) }}
+
+                        {% for error in form.contacto.errors %}
+
+                            <div class="text-danger mt-1">
+                                {{ error }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        {{ form.telefono.label(class="form-label") }}
+
+                        {{ form.telefono(
+                            class="form-control",
+                            placeholder="Ingrese el teléfono"
+                        ) }}
+
+                        {% for error in form.telefono.errors %}
+
+                            <div class="text-danger mt-1">
+                                {{ error }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="d-grid">
+
+                        {{ form.submit(
+                            class="btn btn-primary btn-lg"
+                        ) }}
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+{% endblock %}

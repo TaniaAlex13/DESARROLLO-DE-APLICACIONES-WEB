@@ -8,24 +8,36 @@ class ProveedorForm(FlaskForm):
     empresa = StringField(
         "Empresa",
         validators=[
-            DataRequired(),
-            Length(min=3, max=100)
+            DataRequired(message="La empresa es obligatoria."),
+            Length(
+                min=3,
+                max=100,
+                message="La empresa debe tener entre 3 y 100 caracteres."
+            )
         ]
     )
 
     contacto = StringField(
         "Persona de contacto",
         validators=[
-            DataRequired(),
-            Length(min=3, max=100)
+            DataRequired(message="El contacto es obligatorio."),
+            Length(
+                min=3,
+                max=100,
+                message="El contacto debe tener entre 3 y 100 caracteres."
+            )
         ]
     )
 
     telefono = StringField(
         "Teléfono",
         validators=[
-            DataRequired(),
-            Length(min=7, max=15)
+            DataRequired(message="El teléfono es obligatorio."),
+            Length(
+                min=7,
+                max=15,
+                message="El teléfono debe tener entre 7 y 15 caracteres."
+            )
         ]
     )
 
