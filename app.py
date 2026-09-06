@@ -4,36 +4,53 @@ from forms.cliente_form import ClienteForm
 from forms.proveedor_form import ProveedorForm
 from forms.facturacion_form import FacturacionForm
 
+import sqlite3
+import os
+
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = "clave-secreta-semana-11"
 
-productos_lista = [
-    {
-        "nombre": "Laptop Lenovo",
-        "categoria": "Computación",
-        "precio": 650.00,
-        "stock": 5
-    },
-    {
-        "nombre": "Mouse inalámbrico",
-        "categoria": "Accesorios",
-        "precio": 15.00,
-        "stock": 10
-    },
-    {
-        "nombre": "Teclado mecánico",
-        "categoria": "Accesorios",
-        "precio": 45.00,
-        "stock": 0
-    },
-    {
-        "nombre": "Monitor LG 24 pulgadas",
-        "categoria": "Monitores",
-        "precio": 180.00,
-        "stock": 3
-    }
-]
+# =========================================================
+# CONFIGURACIÓN DE LA BASE DE DATOS
+# =========================================================
+
+DATABASE = "data/ferreteria.db"
+
+
+def conectar_db():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def crear_base_datos():
+    # Crear carpeta data si no existe
+    os.makedirs("data", exist_ok=True)
+
+    conn = conectar_db()
+
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS productos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            categoria TEXT NOT NULL,
+            precio REAL NOT NULL,
+            stock INTEGER NOT NULL
+        )
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+# Crear la base de datos y la tabla al iniciar la aplicación
+crear_base_datos()
+
+
+# =========================================================
+# DATOS DE CLIENTES, PROVEEDORES Y FACTURACIÓN
+# =========================================================
 
 clientes_lista = [
     {
@@ -56,6 +73,7 @@ clientes_lista = [
     }
 ]
 
+
 proveedores_lista = [
     {
         "empresa": "Tech Solutions",
@@ -68,6 +86,7 @@ proveedores_lista = [
         "telefono": "0982223344"
     }
 ]
+
 
 facturas_lista = [
     {
@@ -90,34 +109,72 @@ facturas_lista = [
     }
 ]
 
+
+# =========================================================
+# INICIO
+# =========================================================
+
 @app.route("/")
 def inicio():
     nombre_sistema = "Sistema de Gestión Comercial"
+
     return render_template(
         "index.html",
         nombre_sistema=nombre_sistema
     )
 
+
+# =========================================================
+# PRODUCTOS - SELECT DESDE SQLITE
+# =========================================================
+
 @app.route("/productos")
 def productos():
+
+    conn = conectar_db()
+
+    cursor = conn.execute("""
+        SELECT id, nombre, categoria, precio, stock
+        FROM productos
+        ORDER BY id
+    """)
+
+    productos = cursor.fetchall()
+
+    conn.close()
+
     return render_template(
         "productos.html",
-        productos=productos_lista
+        productos=productos
     )
+
+
+# =========================================================
+# FORMULARIO DE PRODUCTOS - INSERT EN SQLITE
+# =========================================================
 
 @app.route("/formulario-producto", methods=["GET", "POST"])
 def formulario_producto():
+
     form = ProductoForm()
 
     if form.validate_on_submit():
-        producto = {
-            "nombre": form.nombre.data,
-            "categoria": form.categoria.data,
-            "precio": form.precio.data,
-            "stock": form.stock.data
-        }
 
-        productos_lista.append(producto)
+        conn = conectar_db()
+
+        conn.execute("""
+            INSERT INTO productos
+            (nombre, categoria, precio, stock)
+            VALUES (?, ?, ?, ?)
+        """, (
+            form.nombre.data,
+            form.categoria.data,
+            form.precio.data,
+            form.stock.data
+        ))
+
+        conn.commit()
+        conn.close()
 
         return "Producto registrado correctamente"
 
@@ -126,6 +183,11 @@ def formulario_producto():
         form=form
     )
 
+
+# =========================================================
+# CLIENTES
+# =========================================================
+
 @app.route("/clientes")
 def clientes():
     return render_template(
@@ -133,11 +195,14 @@ def clientes():
         clientes=clientes_lista
     )
 
+
 @app.route("/formulario-cliente", methods=["GET", "POST"])
 def formulario_cliente():
+
     form = ClienteForm()
 
     if form.validate_on_submit():
+
         cliente = {
             "nombre": form.nombre.data,
             "correo": form.correo.data,
@@ -153,6 +218,11 @@ def formulario_cliente():
         form=form
     )
 
+
+# =========================================================
+# PROVEEDORES
+# =========================================================
+
 @app.route("/proveedores")
 def proveedores():
     return render_template(
@@ -160,11 +230,14 @@ def proveedores():
         proveedores=proveedores_lista
     )
 
+
 @app.route("/formulario-proveedor", methods=["GET", "POST"])
 def formulario_proveedor():
+
     form = ProveedorForm()
 
     if form.validate_on_submit():
+
         proveedor = {
             "empresa": form.empresa.data,
             "contacto": form.contacto.data,
@@ -180,6 +253,11 @@ def formulario_proveedor():
         form=form
     )
 
+
+# =========================================================
+# FACTURACIÓN
+# =========================================================
+
 @app.route("/facturacion")
 def facturacion():
     return render_template(
@@ -187,11 +265,14 @@ def facturacion():
         facturas=facturas_lista
     )
 
+
 @app.route("/formulario-facturacion", methods=["GET", "POST"])
 def formulario_facturacion():
+
     form = FacturacionForm()
 
     if form.validate_on_submit():
+
         factura = {
             "numero": form.numero.data,
             "cliente": form.cliente.data,
@@ -207,6 +288,11 @@ def formulario_facturacion():
         "formulario_facturacion.html",
         form=form
     )
+
+
+# =========================================================
+# EJECUTAR APLICACIÓN
+# =========================================================
 
 if __name__ == "__main__":
     app.run(debug=True)
