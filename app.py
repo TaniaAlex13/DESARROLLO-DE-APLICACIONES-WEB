@@ -1,66 +1,29 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from forms.producto_form import ProductoForm
 from forms.cliente_form import ClienteForm
 from forms.proveedor_form import ProveedorForm
 from forms.facturacion_form import FacturacionForm
+from conexion.conexion import obtener_conexion
 
-import sqlite3
-import os
 
 app = Flask(__name__)
 
-app.config["SECRET_KEY"] = "clave-secreta-semana-11"
-
-# =========================================================
-# CONFIGURACIÓN DE LA BASE DE DATOS
-# =========================================================
-
-DATABASE = "data/ferreteria.db"
+app.config["SECRET_KEY"] = "clave-secreta-semana-12"
 
 
-def conectar_db():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def crear_base_datos():
-    # Crear carpeta data si no existe
-    os.makedirs("data", exist_ok=True)
-
-    conn = conectar_db()
-
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS productos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            categoria TEXT NOT NULL,
-            precio REAL NOT NULL,
-            stock INTEGER NOT NULL
-        )
-    """)
-
-    conn.commit()
-    conn.close()
-
-
-# Crear la base de datos y la tabla al iniciar la aplicación
-crear_base_datos()
-
-
-# =========================================================
-# DATOS DE CLIENTES, PROVEEDORES Y FACTURACIÓN
-# =========================================================
+# =========================
+# DATOS TEMPORALES
+# =========================
 
 clientes_lista = [
     {
-        "nombre": "Juan Pérez",
+        "nombre": "Juan Perez",
         "correo": "juan@gmail.com",
         "telefono": "0991234567",
         "estado": "Activo"
     },
     {
-        "nombre": "María López",
+        "nombre": "Maria Lopez",
         "correo": "maria@gmail.com",
         "telefono": "0987654321",
         "estado": "Activo"
@@ -77,7 +40,7 @@ clientes_lista = [
 proveedores_lista = [
     {
         "empresa": "Tech Solutions",
-        "contacto": "Pedro Gómez",
+        "contacto": "Pedro Gomez",
         "telefono": "0991112233"
     },
     {
@@ -91,13 +54,13 @@ proveedores_lista = [
 facturas_lista = [
     {
         "numero": "001-001-000001",
-        "cliente": "Juan Pérez",
+        "cliente": "Juan Perez",
         "total": 50.00,
         "estado": "Pagada"
     },
     {
         "numero": "001-001-000002",
-        "cliente": "María López",
+        "cliente": "Maria Lopez",
         "total": 85.00,
         "estado": "Pendiente"
     },
@@ -110,13 +73,13 @@ facturas_lista = [
 ]
 
 
-# =========================================================
+# =========================
 # INICIO
-# =========================================================
+# =========================
 
 @app.route("/")
 def inicio():
-    nombre_sistema = "Sistema de Gestión Comercial"
+    nombre_sistema = "Sistema de Gestion Comercial"
 
     return render_template(
         "index.html",
@@ -124,34 +87,38 @@ def inicio():
     )
 
 
-# =========================================================
-# PRODUCTOS - SELECT DESDE SQLITE
-# =========================================================
+# =========================
+# PRODUCTOS - MYSQL
+# =========================
 
 @app.route("/productos")
 def productos():
 
-    conn = conectar_db()
+    conexion = obtener_conexion()
 
-    cursor = conn.execute("""
-        SELECT id, nombre, categoria, precio, stock
+    cursor = conexion.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            id_producto,
+            nombre,
+            categoria,
+            precio,
+            stock
         FROM productos
-        ORDER BY id
+        ORDER BY id_producto
     """)
 
     productos = cursor.fetchall()
 
-    conn.close()
+    cursor.close()
+    conexion.close()
 
     return render_template(
         "productos.html",
         productos=productos
     )
 
-
-# =========================================================
-# FORMULARIO DE PRODUCTOS - INSERT EN SQLITE
-# =========================================================
 
 @app.route("/formulario-producto", methods=["GET", "POST"])
 def formulario_producto():
@@ -160,12 +127,14 @@ def formulario_producto():
 
     if form.validate_on_submit():
 
-        conn = conectar_db()
+        conexion = obtener_conexion()
 
-        conn.execute("""
+        cursor = conexion.cursor()
+
+        cursor.execute("""
             INSERT INTO productos
             (nombre, categoria, precio, stock)
-            VALUES (?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s)
         """, (
             form.nombre.data,
             form.categoria.data,
@@ -173,23 +142,122 @@ def formulario_producto():
             form.stock.data
         ))
 
-        conn.commit()
-        conn.close()
+        conexion.commit()
+
+        cursor.close()
+        conexion.close()
 
         return "Producto registrado correctamente"
+
+    if form.is_submitted():
+
+        print("Errores del formulario:")
+        print(form.errors)
 
     return render_template(
         "formulario_producto.html",
         form=form
     )
 
+# =========================
+# MODIFICAR PRODUCTO
+# =========================
 
-# =========================================================
+@app.route("/editar-producto/<int:id_producto>", methods=["GET", "POST"])
+def editar_producto(id_producto):
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            id_producto,
+            nombre,
+            categoria,
+            precio,
+            stock
+        FROM productos
+        WHERE id_producto = %s
+    """, (id_producto,))
+
+    producto = cursor.fetchone()
+
+    cursor.close()
+    conexion.close()
+
+    if producto is None:
+        return "Producto no encontrado"
+
+    form = ProductoForm()
+
+    if form.validate_on_submit():
+
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+
+        cursor.execute("""
+            UPDATE productos
+            SET nombre = %s,
+                categoria = %s,
+                precio = %s,
+                stock = %s
+            WHERE id_producto = %s
+        """, (
+            form.nombre.data,
+            form.categoria.data,
+            form.precio.data,
+            form.stock.data,
+            id_producto
+        ))
+
+        conexion.commit()
+
+        cursor.close()
+        conexion.close()
+
+        return redirect(url_for("productos"))
+
+    if not form.is_submitted():
+
+        form.nombre.data = producto["nombre"]
+        form.categoria.data = producto["categoria"]
+        form.precio.data = producto["precio"]
+        form.stock.data = producto["stock"]
+
+    return render_template(
+        "formulario_producto.html",
+        form=form
+    )
+
+# =========================
+# ELIMINAR PRODUCTO
+# =========================
+
+@app.route("/eliminar-producto/<int:id_producto>")
+def eliminar_producto(id_producto):
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+        DELETE FROM productos
+        WHERE id_producto = %s
+    """, (id_producto,))
+
+    conexion.commit()
+
+    cursor.close()
+    conexion.close()
+
+    return redirect(url_for("productos"))
+
+# =========================
 # CLIENTES
-# =========================================================
+# =========================
 
 @app.route("/clientes")
 def clientes():
+
     return render_template(
         "clientes.html",
         clientes=clientes_lista
@@ -219,12 +287,13 @@ def formulario_cliente():
     )
 
 
-# =========================================================
+# =========================
 # PROVEEDORES
-# =========================================================
+# =========================
 
 @app.route("/proveedores")
 def proveedores():
+
     return render_template(
         "proveedores.html",
         proveedores=proveedores_lista
@@ -254,12 +323,13 @@ def formulario_proveedor():
     )
 
 
-# =========================================================
+# =========================
 # FACTURACIÓN
-# =========================================================
+# =========================
 
 @app.route("/facturacion")
 def facturacion():
+
     return render_template(
         "facturacion.html",
         facturas=facturas_lista
@@ -290,9 +360,9 @@ def formulario_facturacion():
     )
 
 
-# =========================================================
+# =========================
 # EJECUTAR APLICACIÓN
-# =========================================================
+# =========================
 
 if __name__ == "__main__":
     app.run(debug=True)

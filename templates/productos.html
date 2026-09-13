@@ -6,84 +6,102 @@
 
 <div class="container py-5">
 
-    <h1 class="text-center mb-4">Productos</h1>
+```
+<h1 class="text-center mb-4">Productos</h1>
 
-    <div class="card shadow">
-        <div class="card-body">
+<div class="card shadow">
+    <div class="card-body">
 
-            <h5 class="card-title">Listado de Productos</h5>
+        <h5 class="card-title">Listado de Productos</h5>
 
-            <p class="card-text">
-                Los productos se muestran dinámicamente utilizando
-                listas, diccionarios y estructuras Jinja2.
-            </p>
+        <p class="card-text">
+            Los productos se muestran dinámicamente desde la base de datos MySQL
+            utilizando Jinja2.
+        </p>
 
-            <div class="table-responsive">
+        <div class="table-responsive">
 
-                <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped">
 
-                    <thead class="table-primary">
-                        <tr>
-                            <th>Producto</th>
-                            <th>Categoría</th>
-                            <th>Precio</th>
-                            <th>Stock</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
+                <thead class="table-primary">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
 
-                    <tbody>
+                <tbody>
 
-                        {% for producto in productos %}
+                    {% for producto in productos %}
 
-                        <tr>
+                    <tr>
 
-                            <td>
-                                {{ producto.nombre }}
-                            </td>
+                        <td>
+                            {{ producto.nombre }}
+                        </td>
 
-                            <td>
-                                {{ producto.categoria|upper }}
-                            </td>
+                        <td>
+                            {{ producto.categoria|upper }}
+                        </td>
 
-                            <td>
-                                ${{ "%.2f"|format(producto.precio) }}
-                            </td>
+                        <td>
+                            ${{ "%.2f"|format(producto.precio) }}
+                        </td>
 
-                            <td>
-                                {{ producto.stock }}
-                            </td>
+                        <td>
+                            {{ producto.stock }}
+                        </td>
 
-                            <td>
+                        <td>
 
-                                {% if producto.stock > 0 %}
+                            {% if producto.stock > 0 %}
 
-                                    <span class="badge bg-success">
-                                        Disponible
-                                    </span>
+                                <span class="badge bg-success">
+                                    Disponible
+                                </span>
 
-                                {% else %}
+                            {% else %}
 
-                                    <span class="badge bg-danger">
-                                        Agotado
-                                    </span>
+                                <span class="badge bg-danger">
+                                    Agotado
+                                </span>
 
-                                {% endif %}
+                            {% endif %}
 
-                            </td>
+                        </td>
 
-                        </tr>
+                        <td>
 
-                        {% endfor %}
+                            <a href="{{ url_for('editar_producto', id_producto=producto.id_producto) }}"
+                               class="btn btn-warning btn-sm">
+                                Modificar
+                            </a>
 
-                    </tbody>
+                            <a href="{{ url_for('eliminar_producto', id_producto=producto.id_producto) }}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('¿Está seguro de eliminar este producto?');">
+                                Eliminar
+                            </a>
 
-                </table>
+                        </td>
 
-            </div>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
 
         </div>
+
     </div>
+</div>
+```
 
 </div>
 
