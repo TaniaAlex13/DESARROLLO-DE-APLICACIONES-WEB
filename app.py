@@ -1,4 +1,8 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, flash
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+from forms.usuario_form import UsuarioForm
+from forms.login_form import LoginForm
 from forms.producto_form import ProductoForm
 from forms.cliente_form import ClienteForm
 from forms.proveedor_form import ProveedorForm
@@ -10,6 +14,175 @@ app = Flask(__name__)
 
 app.config["SECRET_KEY"] = "clave-secreta-semana-12"
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+class Usuario(UserMixin):
+    def __init__(self, id, usuario):
+        self.id = id
+        self.usuario = usuario
+
+
+@login_manager.user_loader
+def load_user(user_id):
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor(dictionary=True)
+
+    cursor.execute(
+        "SELECT id, usuario FROM usuarios WHERE id = %s",
+        (user_id,)
+    )
+
+    usuario = cursor.fetchone()
+
+    cursor.close()
+    conexion.close()
+
+    if usuario:
+        return Usuario(usuario["id"], usuario["usuario"])
+
+    return None
+
+# =========================
+# REGISTRO DE USUARIO
+# =========================
+
+@app.route("/registro", methods=["GET", "POST"])
+def registro():
+
+    form = UsuarioForm()
+
+    if form.validate_on_submit():
+
+        conexion = obtener_conexion()
+        cursor = conexion.cursor(dictionary=True)
+
+        # Verificar si el usuario ya existe
+        cursor.execute(
+            "SELECT id FROM usuarios WHERE usuario = %s",
+            (form.usuario.data,)
+        )
+
+        usuario_existente = cursor.fetchone()
+
+        if usuario_existente:
+            cursor.close()
+            conexion.close()
+
+            flash("El usuario ya existe.", "danger")
+
+            return render_template(
+                "registro.html",
+                form=form
+            )
+
+        # Encriptar contraseña
+        password_hash = generate_password_hash(
+            form.password.data
+        )
+
+        # Registrar usuario
+        cursor.execute(
+            """
+            INSERT INTO usuarios (usuario, password)
+            VALUES (%s, %s)
+            """,
+            (
+                form.usuario.data,
+                password_hash
+            )
+        )
+
+        conexion.commit()
+
+        cursor.close()
+        conexion.close()
+
+        flash("Usuario registrado correctamente.", "success")
+
+        return redirect(url_for("login"))
+
+    return render_template(
+        "registro.html",
+        form=form
+    )
+# =========================
+# INICIO DE SESIÓN
+# =========================
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+
+        conexion = obtener_conexion()
+        cursor = conexion.cursor(dictionary=True)
+
+        cursor.execute(
+            """
+            SELECT id, usuario, password
+            FROM usuarios
+            WHERE usuario = %s
+            """,
+            (form.usuario.data,)
+        )
+
+        usuario = cursor.fetchone()
+
+        cursor.close()
+        conexion.close()
+
+        if usuario and check_password_hash(
+            usuario["password"],
+            form.password.data
+        ):
+
+            usuario_objeto = Usuario(
+                usuario["id"],
+                usuario["usuario"]
+            )
+
+            login_user(usuario_objeto)
+
+            return redirect(url_for("dashboard"))
+
+        flash("Usuario o contraseña incorrectos.", "danger")
+
+    return render_template(
+        "login.html",
+        form=form
+    )
+
+# =========================
+# DASHBOARD
+# =========================
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+
+    return render_template(
+        "dashboard.html"
+    )
+
+
+# =========================
+# CERRAR SESIÓN
+# =========================
+
+@app.route("/logout")
+@login_required
+def logout():
+
+    logout_user()
+
+    flash("Sesión cerrada correctamente.", "success")
+
+    return redirect(url_for("login"))
 
 # =========================
 # DATOS TEMPORALES
@@ -92,6 +265,7 @@ def inicio():
 # =========================
 
 @app.route("/productos")
+@login_required
 def productos():
 
     conexion = obtener_conexion()
@@ -121,6 +295,7 @@ def productos():
 
 
 @app.route("/formulario-producto", methods=["GET", "POST"])
+@login_required
 def formulario_producto():
 
     form = ProductoForm()
@@ -164,6 +339,7 @@ def formulario_producto():
 # =========================
 
 @app.route("/editar-producto/<int:id_producto>", methods=["GET", "POST"])
+@login_required
 def editar_producto(id_producto):
 
     conexion = obtener_conexion()
@@ -234,6 +410,7 @@ def editar_producto(id_producto):
 # =========================
 
 @app.route("/eliminar-producto/<int:id_producto>")
+@login_required
 def eliminar_producto(id_producto):
 
     conexion = obtener_conexion()
@@ -256,6 +433,7 @@ def eliminar_producto(id_producto):
 # =========================
 
 @app.route("/clientes")
+@login_required
 def clientes():
 
     return render_template(
@@ -265,6 +443,7 @@ def clientes():
 
 
 @app.route("/formulario-cliente", methods=["GET", "POST"])
+@login_required
 def formulario_cliente():
 
     form = ClienteForm()
@@ -292,6 +471,7 @@ def formulario_cliente():
 # =========================
 
 @app.route("/proveedores")
+@login_required
 def proveedores():
 
     return render_template(
@@ -301,6 +481,7 @@ def proveedores():
 
 
 @app.route("/formulario-proveedor", methods=["GET", "POST"])
+@login_required
 def formulario_proveedor():
 
     form = ProveedorForm()
@@ -328,6 +509,7 @@ def formulario_proveedor():
 # =========================
 
 @app.route("/facturacion")
+@login_required
 def facturacion():
 
     return render_template(
@@ -337,6 +519,7 @@ def facturacion():
 
 
 @app.route("/formulario-facturacion", methods=["GET", "POST"])
+@login_required
 def formulario_facturacion():
 
     form = FacturacionForm()
