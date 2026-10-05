@@ -13,6 +13,14 @@ class ClienteForm(FlaskForm):
         ]
     )
 
+    cedula = StringField(
+        "Cédula",
+        validators=[
+            DataRequired(),
+            Length(min=10, max=20)
+        ]
+    )
+
     correo = EmailField(
         "Correo electrónico",
         validators=[

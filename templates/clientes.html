@@ -9,13 +9,25 @@
     <h1 class="text-center mb-4">Clientes</h1>
 
     <div class="card shadow">
+
         <div class="card-body">
 
-            <h5 class="card-title">Listado de Clientes</h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h5 class="card-title mb-0">
+                    Listado de Clientes
+                </h5>
+
+                <a href="{{ url_for('formulario_cliente') }}"
+                   class="btn btn-primary">
+                    + Nuevo cliente
+                </a>
+
+            </div>
 
             <p class="card-text">
-                En este módulo se presentan los clientes registrados
-                dinámicamente mediante Flask y Jinja2.
+                Los clientes se muestran dinámicamente desde PostgreSQL
+                utilizando Flask y Jinja2.
             </p>
 
             <div class="table-responsive">
@@ -27,9 +39,10 @@
                         <tr>
                             <th>#</th>
                             <th>Nombre</th>
-                            <th>Correo</th>
+                            <th>Cédula</th>
                             <th>Teléfono</th>
-                            <th>Estado</th>
+                            <th>Correo</th>
+                            <th>Acciones</th>
                         </tr>
 
                     </thead>
@@ -41,7 +54,7 @@
                         <tr>
 
                             <td>
-                                {{ loop.index }}
+                                {{ cliente.id_cliente }}
                             </td>
 
                             <td>
@@ -49,7 +62,7 @@
                             </td>
 
                             <td>
-                                {{ cliente.correo }}
+                                {{ cliente.cedula }}
                             </td>
 
                             <td>
@@ -57,20 +70,21 @@
                             </td>
 
                             <td>
+                                {{ cliente.correo }}
+                            </td>
 
-                                {% if cliente.estado == "Activo" %}
+                            <td>
 
-                                    <span class="badge bg-success">
-                                        {{ cliente.estado }}
-                                    </span>
+                                <a href="{{ url_for('editar_cliente', id_cliente=cliente.id_cliente) }}"
+                                   class="btn btn-warning btn-sm">
+                                    Modificar
+                                </a>
 
-                                {% else %}
-
-                                    <span class="badge bg-danger">
-                                        {{ cliente.estado }}
-                                    </span>
-
-                                {% endif %}
+                                <a href="{{ url_for('eliminar_cliente', id_cliente=cliente.id_cliente) }}"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('¿Está seguro de eliminar este cliente?');">
+                                    Eliminar
+                                </a>
 
                             </td>
 
@@ -79,9 +93,11 @@
                         {% else %}
 
                         <tr>
-                            <td colspan="5" class="text-center">
+
+                            <td colspan="6" class="text-center">
                                 No existen clientes registrados.
                             </td>
+
                         </tr>
 
                         {% endfor %}
@@ -93,6 +109,7 @@
             </div>
 
         </div>
+
     </div>
 
 </div>

@@ -6,18 +6,28 @@
 
 <div class="container py-5">
 
-```
 <h1 class="text-center mb-4">Productos</h1>
 
 <div class="card shadow">
     <div class="card-body">
 
-        <h5 class="card-title">Listado de Productos</h5>
+        <div class="d-flex justify-content-between align-items-center mb-3">
 
-        <p class="card-text">
-            Los productos se muestran dinámicamente desde la base de datos MySQL
-            utilizando Jinja2.
-        </p>
+    <h5 class="card-title mb-0">
+        Listado de Productos
+    </h5>
+
+    <a href="{{ url_for('formulario_producto') }}"
+       class="btn btn-primary">
+        + Nuevo producto
+    </a>
+
+</div>
+
+<p class="card-text">
+    Los productos se muestran dinámicamente desde la base de datos PostgreSQL
+    utilizando Jinja2.
+</p>
 
         <div class="table-responsive">
 
@@ -29,6 +39,7 @@
                         <th>Categoría</th>
                         <th>Precio</th>
                         <th>Stock</th>
+                        <th>Proveedor</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -53,14 +64,17 @@
                         </td>
 
                         <td>
-                            {{ producto.stock }}
-                        </td>
+    {{ producto.stock }}
+</td>
 
-                        <td>
+                                <td>
+                                    {{ producto.proveedor or "Sin proveedor" }}
+                                </td>
 
-                            {% if producto.stock > 0 %}
+                                 <td>
+                                     {% if producto.stock > 0 %}
 
-                                <span class="badge bg-success">
+                                 <span class="badge bg-success">
                                     Disponible
                                 </span>
 
@@ -101,7 +115,6 @@
 
     </div>
 </div>
-```
 
 </div>
 

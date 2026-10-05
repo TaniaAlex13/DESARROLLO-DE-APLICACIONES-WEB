@@ -1,19 +1,20 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, FloatField, SelectField, SubmitField
+from wtforms import SelectField, DateField, FloatField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
 
 
 class FacturacionForm(FlaskForm):
 
-    numero = StringField(
-        "Número de factura",
+    id_cliente = SelectField(
+        "Cliente",
+        coerce=int,
         validators=[
             DataRequired()
         ]
     )
 
-    cliente = StringField(
-        "Cliente",
+    fecha = DateField(
+        "Fecha",
         validators=[
             DataRequired()
         ]
@@ -23,19 +24,13 @@ class FacturacionForm(FlaskForm):
         "Total",
         validators=[
             DataRequired(),
-            NumberRange(min=0)
+            NumberRange(
+                min=0,
+                message="El total debe ser mayor o igual a 0."
+            )
         ]
     )
 
-    estado = SelectField(
-        "Estado",
-        choices=[
-            ("Pagada", "Pagada"),
-            ("Pendiente", "Pendiente")
-        ],
-        validators=[
-            DataRequired()
-        ]
+    submit = SubmitField(
+        "Guardar factura"
     )
-
-    submit = SubmitField("Guardar factura")
